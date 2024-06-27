@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Inbox</h1>
+{% if unread_count > 0 %}
+<p>You have {{ unread_count }} new messages.</p>
+{% endif %}
+<ul>
+    {% for message in messages %}
+    <li>
+        <a href="{{ url_for('main.message', message_id=message.id) }}">
+            {{ message.author.username }}: {{ message.body[:50] }}...
+        </a>
+        {% if not message.read %}
+        <span class="new">New</span>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

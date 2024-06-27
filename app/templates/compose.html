@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Compose Message</h1>
+<form method="POST" action="{{ url_for('main.compose') }}">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.recipient.label }}<br>
+        {{ form.recipient(size=32) }}
+    </p>
+    <p>
+        {{ form.body.label }}<br>
+        {{ form.body(rows=10) }}
+    </p>
+    <p>
+        {{ form.aes_algorithm.label }}<br>
+        {{ form.aes_algorithm() }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Decrypt</h2>
+<form method="POST" action="{{ url_for('main.decrypt') }}">
+    <label for="ciphertext">Ciphertext:</label>
+    <input type="text" name="ciphertext" required><br>
+    <label for="key">Key:</label>
+    <input type="text" name="key" required><br>
+    <label for="iv">IV:</label>
+    <input type="text" name="iv" required><br>
+    <button type="submit">Decrypt</button>
+</form>
+{% if plaintext %}
+    <h3>Decrypted Text</h3>
+    <p>{{ plaintext }}</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Send Message</h2>
+  <form method="POST" action="{{ url_for('main.send_message') }}">
+    {{ form.hidden_tag() }}
+    <label for="recipient">Recipient Username:</label>
+    {{ form.recipient(class="form-control", required=true) }}<br>
+    <label for="aes_algorithm">AES Algorithm:</label>
+    {{ form.aes_algorithm(class="form-control", required=true) }}<br>
+    <label for="body">Message:</label>
+    {{ form.body(class="form-control", required=true) }}<br>
+    <button type="submit" class="btn btn-primary">Send</button>
+  </form>
+{% endblock %}
