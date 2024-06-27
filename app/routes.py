@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from .models import User, Message  # Ensure Message is imported
+from .models import User, Message
 from .forms import LoginForm, RegistrationForm, MessageForm
 from . import db
-from datetime import datetime
+from .utils import generate_aes_key_and_iv, encrypt_message
 
 bp = Blueprint('main', __name__)
 
@@ -61,16 +61,19 @@ def register():
 def send_message():
     form = MessageForm()
     if form.validate_on_submit():
+        aes_algorithm = form.aes_algorithm.data
+        aes_key, aes_iv = generate_aes_key_and_iv(aes_algorithm)
+        encrypted_body = encrypt_message(form.body.data, aes_algorithm, aes_key, aes_iv)
+
         recipient = User.query.filter_by(username=form.recipient.data).first()
         if recipient:
             message = Message(
                 sender_id=current_user.id,
                 recipient_id=recipient.id,
-                body=form.body.data,
-                timestamp=datetime.utcnow(),
-                aes_algorithm="",  # Providing default value
-                aes_key="",        # Providing default value
-                aes_iv=""          # Providing default value
+                body=encrypted_body,
+                aes_algorithm=aes_algorithm,
+                aes_key=aes_key,
+                aes_iv=aes_iv
             )
             db.session.add(message)
             db.session.commit()
@@ -84,4 +87,17 @@ def send_message():
 @login_required
 def messages():
     received_messages = Message.query.filter_by(recipient_id=current_user.id).all()
-    return render_template('messages.html', messages=received_messages)
+    decrypted_messages = [(msg, msg.body) for msg in received_messages]
+    return render_template('messages.html', messages=decrypted_messages)
+
+
+@bp.route('/decrypt_message/<int:message_id>', methods=['GET'])
+@login_required
+def decrypt_message(message_id):
+    message = Message.query.get(message_id)
+    if message and message.recipient_id == current_user.id:
+        decrypted_body = decrypt_message(message.body, message.aes_algorithm, message.aes_key, message.aes_iv)
+        flash(f'Decrypted message: {decrypted_body}')
+    else:
+        flash('Message not found or you are not authorized to view it.')
+    return redirect(url_for('main.messages'))

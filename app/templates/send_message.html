@@ -3,12 +3,20 @@
   <h2>Send Message</h2>
   <form method="POST" action="{{ url_for('main.send_message') }}">
     {{ form.hidden_tag() }}
-    <label for="recipient">Recipient Username:</label>
-    {{ form.recipient(class="form-control", required=true) }}<br>
-    <label for="aes_algorithm">AES Algorithm:</label>
-    {{ form.aes_algorithm(class="form-control", required=true) }}<br>
-    <label for="body">Message:</label>
-    {{ form.body(class="form-control", required=true) }}<br>
-    <button type="submit" class="btn btn-primary">Send</button>
+    <p>
+      {{ form.recipient.label }}<br>
+      {{ form.recipient(size=32) }}
+    </p>
+    <p>
+      {{ form.body.label }}<br>
+      {{ form.body(rows=4, cols=50) }}
+    </p>
+    <p>
+      {{ form.aes_algorithm.label }}<br>
+      {{ form.aes_algorithm() }}
+    </p>
+    <p>
+      {{ form.submit() }}
+    </p>
   </form>
 {% endblock %}

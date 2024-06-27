@@ -2,11 +2,12 @@
 {% block content %}
   <h2>Messages</h2>
   <ul>
-    {% for message in messages %}
+    {% for message, encrypted_body in messages %}
       <li>
         <strong>From:</strong> {{ message.sender.username }}<br>
         <strong>Date:</strong> {{ message.timestamp }}<br>
-        <strong>Message:</strong> {{ message.body }}
+        <strong>Encrypted Message:</strong> {{ encrypted_body }}<br>
+        <a href="{{ url_for('main.decrypt_message', message_id=message.id) }}">Decrypt</a>
       </li>
       <hr>
     {% endfor %}
