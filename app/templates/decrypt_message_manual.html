@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Decrypt Message Manually</h2>
+  <form method="POST" action="{{ url_for('main.decrypt_message_manual') }}">
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.message_id.label }}<br>
+      {{ form.message_id(size=32) }}
+    </p>
+    <p>
+      {{ form.encrypted_message.label }}<br>
+      {{ form.encrypted_message(rows=4, cols=50) }}
+    </p>
+    <p>
+      {{ form.aes_key.label }}<br>
+      {{ form.aes_key(size=64) }}
+    </p>
+    <p>
+      {{ form.aes_iv.label }}<br>
+      {{ form.aes_iv(size=64) }}
+    </p>
+    <p>
+      {{ form.aes_algorithm.label }}<br>
+      {{ form.aes_algorithm() }}
+    </p>
+    <p>
+      {{ form.submit() }}
+    </p>
+  </form>
+  {% if decrypted_message %}
+    <h3>Decrypted Message:</h3>
+    <p>{{ decrypted_message }}</p>
+  {% endif %}
+{% endblock %}

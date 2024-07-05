@@ -4,6 +4,7 @@ from .models import User, Message
 from .forms import LoginForm, RegistrationForm, MessageForm
 from . import db
 from .utils import generate_aes_key_and_iv, encrypt_message
+from .forms import DecryptMessageManualForm
 
 bp = Blueprint('main', __name__)
 
@@ -101,3 +102,24 @@ def decrypt_message(message_id):
     else:
         flash('Message not found or you are not authorized to view it.')
     return redirect(url_for('main.messages'))
+
+
+
+
+@bp.route('/decrypt_message_manual', methods=['GET', 'POST'])
+@login_required
+def decrypt_message_manual():
+    form = DecryptMessageManualForm()
+    decrypted_message = None
+    if form.validate_on_submit():
+        try:
+            decrypted_message = decrypt_message(
+                form.encrypted_message.data,
+                form.aes_algorithm.data,
+                form.aes_key.data,
+                form.aes_iv.data
+            )
+            flash('Message decrypted successfully!', 'success')
+        except Exception as e:
+            flash(f'Error decrypting message: {e}', 'danger')
+    return render_template('decrypt_message_manual.html', form=form, decrypted_message=decrypted_message)

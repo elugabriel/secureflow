@@ -10,6 +10,14 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Sign In')
+    
+class DecryptMessageManualForm(FlaskForm):
+    message_id = StringField('Message ID', validators=[DataRequired()])
+    encrypted_message = TextAreaField('Encrypted Message', validators=[DataRequired()])
+    aes_key = StringField('AES Key', validators=[DataRequired()])
+    aes_iv = StringField('AES IV', validators=[DataRequired()])
+    aes_algorithm = SelectField('AES Algorithm', choices=[('AES-128', 'AES-128'), ('AES-192', 'AES-192'), ('AES-256', 'AES-256')], validators=[DataRequired()])
+    submit = SubmitField('Decrypt')
 
 class RegistrationForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
