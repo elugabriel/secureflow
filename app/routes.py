@@ -4,7 +4,7 @@ from .models import User, Message
 from .forms import LoginForm, RegistrationForm, MessageForm
 from . import db
 from .utils import generate_aes_key_and_iv, encrypt_message
-from .forms import DecryptMessageManualForm
+from .forms import DecryptMessageForm
 
 bp = Blueprint('main', __name__)
 
@@ -57,6 +57,7 @@ def register():
         return redirect(url_for('main.login'))
     return render_template('register.html', form=form)
 
+
 @bp.route('/send_message', methods=['GET', 'POST'])
 @login_required
 def send_message():
@@ -84,6 +85,7 @@ def send_message():
             flash('Recipient not found.')
     return render_template('send_message.html', form=form)
 
+
 @bp.route('/messages')
 @login_required
 def messages():
@@ -97,7 +99,12 @@ def messages():
 def decrypt_message(message_id):
     message = Message.query.get(message_id)
     if message and message.recipient_id == current_user.id:
-        decrypted_body = decrypt_message(message.body, message.aes_algorithm, message.aes_key, message.aes_iv)
+        decrypted_body = decrypt_message(
+            message.body,
+            message.aes_algorithm,
+            message.aes_key,
+            message.aes_iv
+        )
         flash(f'Decrypted message: {decrypted_body}')
     else:
         flash('Message not found or you are not authorized to view it.')
@@ -105,11 +112,31 @@ def decrypt_message(message_id):
 
 
 
+from .utils import decrypt_message
+
+@bp.route('/decrypt_message/<int:message_id>', methods=['GET'])
+@login_required
+def decrypt_message_route(message_id):
+    message = Message.query.get(message_id)
+    if message and message.recipient_id == current_user.id:
+        try:
+            decrypted_body = decrypt_message(
+                message.body,
+                message.aes_algorithm,
+                message.aes_key,
+                message.aes_iv
+            )
+            flash(f'Decrypted message: {decrypted_body}')
+        except Exception as e:
+            flash(f'Error decrypting message: {e}')
+    else:
+        flash('Message not found or you are not authorized to view it.')
+    return redirect(url_for('main.messages'))
 
 @bp.route('/decrypt_message_manual', methods=['GET', 'POST'])
 @login_required
 def decrypt_message_manual():
-    form = DecryptMessageManualForm()
+    form = DecryptMessageForm()
     decrypted_message = None
     if form.validate_on_submit():
         try:
@@ -119,7 +146,9 @@ def decrypt_message_manual():
                 form.aes_key.data,
                 form.aes_iv.data
             )
-            flash('Message decrypted successfully!', 'success')
         except Exception as e:
-            flash(f'Error decrypting message: {e}', 'danger')
+            flash(f'Error decrypting message: {e}')
     return render_template('decrypt_message_manual.html', form=form, decrypted_message=decrypted_message)
+
+
+

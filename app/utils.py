@@ -17,6 +17,9 @@ def encrypt_message(message, algorithm, key, iv):
     encrypted_message = cipher.encrypt(padded_message)
     return base64.b64encode(encrypted_message).decode('utf-8')
 
+from Crypto.Cipher import AES
+import base64
+
 def decrypt_message(encrypted_message, algorithm, key, iv):
     key = base64.b64decode(key)
     iv = base64.b64decode(iv)
@@ -24,5 +27,7 @@ def decrypt_message(encrypted_message, algorithm, key, iv):
     cipher = AES.new(key, AES.MODE_CBC, iv)
     decrypted_message = cipher.decrypt(encrypted_message).strip()
     return decrypted_message.decode('utf-8')
+
+
 
 

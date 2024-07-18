@@ -7,7 +7,9 @@
         <strong>From:</strong> {{ message.sender.username }}<br>
         <strong>Date:</strong> {{ message.timestamp }}<br>
         <strong>Encrypted Message:</strong> {{ encrypted_body }}<br>
-        <a href="{{ url_for('main.decrypt_message', message_id=message.id) }}">Decrypt</a>
+        <strong>AES Key:</strong> {{ message.aes_key }}<br>
+        <strong>AES IV:</strong> {{ message.aes_iv }}<br>
+        <a href="{{ url_for('main.decrypt_message_manual', message_id=message.id) }}">Decrypt</a>
       </li>
       <hr>
     {% endfor %}
