@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm Evaluation Results</title>
+</head>
+<body>
+    <h1>Algorithm Evaluation Results</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Algorithm</th>
+                <th>Encryption Time (s)</th>
+                <th>Encryption Memory (MiB)</th>
+                <th>Decryption Time (s)</th>
+                <th>Decryption Memory (MiB)</th>
+                <th>Ciphertext Size (bytes)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result.algorithm }}</td>
+                <td>{{ result.enc_time }}</td>
+                <td>{{ result.enc_mem }}</td>
+                <td>{{ result.dec_time }}</td>
+                <td>{{ result.dec_mem }}</td>
+                <td>{{ result.ciphertext_size }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
