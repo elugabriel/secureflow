@@ -3,6 +3,108 @@
   <head>
     <meta charset="utf-8">
     <title>{% block title %}SecureFlow{% endblock %}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        padding-top: 50px; /* Adjust this value if needed */
+      }
+
+      nav {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        background: #333;
+        color: #fff;
+        padding: 1rem;
+        z-index: 1000; /* Ensures navbar stays on top */
+      }
+
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      nav ul li {
+        display: inline;
+        margin-right: 10px;
+      }
+
+      nav ul li a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .container {
+        max-width: 1250px; /* Increased width */
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+
+      h1, h2, h3 {
+        color: #333;
+      }
+
+      form {
+        margin: 20px 0;
+      }
+
+      form p {
+        margin-bottom: 15px;
+      }
+
+      form label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      form input[type="text"], 
+      form textarea, 
+      form select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      form button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      form button:hover {
+        background-color: #0056b3;
+      }
+
+      .flashes {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+      }
+
+      .flashes li {
+        margin-bottom: 5px;
+      }
+
+      .new {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
     <nav>
@@ -13,7 +115,6 @@
         {% else %}
           <li><a href="{{ url_for('main.login') }}">Login</a></li>
           <li><a href="{{ url_for('main.register') }}">Register</a></li>
-          
         {% endif %}
       </ul>
     </nav>
