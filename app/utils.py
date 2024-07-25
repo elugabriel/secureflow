@@ -17,17 +17,13 @@ def encrypt_message(message, algorithm, key, iv):
     encrypted_message = cipher.encrypt(padded_message)
     return base64.b64encode(encrypted_message).decode('utf-8')
 
-from Crypto.Cipher import AES
-import base64
-
 def decrypt_message(encrypted_message, algorithm, key, iv):
+    key_size = {'AES-128': 16, 'AES-192': 24, 'AES-256': 32}.get(algorithm, 16)
     key = base64.b64decode(key)
     iv = base64.b64decode(iv)
+    if len(key) != key_size:
+        raise ValueError(f'Invalid key size for {algorithm}')
     encrypted_message = base64.b64decode(encrypted_message)
     cipher = AES.new(key, AES.MODE_CBC, iv)
     decrypted_message = cipher.decrypt(encrypted_message).strip()
     return decrypted_message.decode('utf-8')
-
-
-
-

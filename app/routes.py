@@ -1,10 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from .models import User, Message
-from .forms import LoginForm, RegistrationForm, MessageForm
+from .forms import LoginForm, RegistrationForm, MessageForm, DecryptMessageForm
 from . import db
-from .utils import generate_aes_key_and_iv, encrypt_message
-from .forms import DecryptMessageForm
+from .utils import generate_aes_key_and_iv, encrypt_message, decrypt_message
 
 bp = Blueprint('main', __name__)
 
@@ -57,7 +56,6 @@ def register():
         return redirect(url_for('main.login'))
     return render_template('register.html', form=form)
 
-
 @bp.route('/send_message', methods=['GET', 'POST'])
 @login_required
 def send_message():
@@ -85,34 +83,12 @@ def send_message():
             flash('Recipient not found.')
     return render_template('send_message.html', form=form)
 
-
 @bp.route('/messages')
 @login_required
 def messages():
     received_messages = Message.query.filter_by(recipient_id=current_user.id).all()
     decrypted_messages = [(msg, msg.body) for msg in received_messages]
     return render_template('messages.html', messages=decrypted_messages)
-
-
-@bp.route('/decrypt_message/<int:message_id>', methods=['GET'])
-@login_required
-def decrypt_message(message_id):
-    message = Message.query.get(message_id)
-    if message and message.recipient_id == current_user.id:
-        decrypted_body = decrypt_message(
-            message.body,
-            message.aes_algorithm,
-            message.aes_key,
-            message.aes_iv
-        )
-        flash(f'Decrypted message: {decrypted_body}')
-    else:
-        flash('Message not found or you are not authorized to view it.')
-    return redirect(url_for('main.messages'))
-
-
-
-from .utils import decrypt_message
 
 @bp.route('/decrypt_message/<int:message_id>', methods=['GET'])
 @login_required
@@ -149,6 +125,3 @@ def decrypt_message_manual():
         except Exception as e:
             flash(f'Error decrypting message: {e}')
     return render_template('decrypt_message_manual.html', form=form, decrypted_message=decrypted_message)
-
-
-
