@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
   <h2>Decrypt Message Manually</h2>
-  <form method="POST" action="{{ url_for('main.decrypt_message_manual') }}">
+  <form method="POST" action="{{ url_for('main.decrypt_message_manual', message_id=message_id) }}">
     {{ form.hidden_tag() }}
     <p>
       {{ form.message_id.label }}<br>

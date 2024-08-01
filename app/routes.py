@@ -166,8 +166,8 @@ def send_message():
                 f'Encryption Time: {encryption_metrics["encryption_time"]:.6f} seconds\n'
                 f'Decryption Time: {decryption_metrics["decryption_time"]:.6f} seconds\n'
                 f'Encryption/Decryption Overhead: {encryption_metrics["encryption_time"] + decryption_metrics["decryption_time"]:.6f} seconds\n'
-                f'Encryption Memory Usage: {encryption_metrics["memory_used"]:.2f} MiB\n'
-                f'Decryption Memory Usage: {decryption_metrics["memory_used"]:.2f} MiB\n'
+                f'Encryption Memory Usage: {encryption_metrics["memory_used"]:.6f} MiB\n'
+                f'Decryption Memory Usage: {decryption_metrics["memory_used"]:.6f} MiB\n'
                 f'Ciphertext Length: {encryption_metrics["ciphertext_length"]} characters\n'
                 f'Security Level: {security_level}\n',
                 'success'
@@ -189,18 +189,20 @@ def messages():
 def decrypt_message_manual(message_id):
     form = DecryptMessageForm()
     message = Message.query.get_or_404(message_id)
+    decrypted_message = None
+
     if form.validate_on_submit():
         decryption_metrics = decrypt_message(message.body, form.aes_algorithm.data, form.aes_key.data, form.aes_iv.data)
+        decrypted_message = decryption_metrics["decrypted_message"]
         flash(
-            f'Decrypted message: {decryption_metrics["decrypted_message"]}\n'
+           
             f'Decryption Time: {decryption_metrics["decryption_time"]:.6f} seconds\n'
-            f'Decryption Memory Usage: {decryption_metrics["memory_used"]:.2f} MiB\n',
-            'success'
-        )
-        return redirect(url_for('main.messages'))
+            f'Decryption Memory Usage: {decryption_metrics["memory_used"]:.6f} MiB\n',
+            'success')
+
     form.message_id.data = message.id
     form.encrypted_message.data = message.body
     form.aes_key.data = message.aes_key
     form.aes_iv.data = message.aes_iv
     form.aes_algorithm.data = message.aes_algorithm
-    return render_template('decrypt_message_manual.html', form=form)
+    return render_template('decrypt_message_manual.html', form=form, message_id=message.id, decrypted_message=decrypted_message)
